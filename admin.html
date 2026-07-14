@@ -22,31 +22,78 @@ placeholder="Enter Doctor Name">
 <button>Home</button>
 </a>
 
+<input type="text" id="doctorName"
+placeholder="Doctor Name">
+
+<input type="text" id="specialization"
+placeholder="Specialization">
+
+<button onclick="addDoctor()">
+Add Doctor
+</button>
+
+<h3>Doctors</h3>
+<div id="doctorList"></div>
+
+<h3>Doctor Leave</h3>
+
+<input type="text"
+id="leaveDoctor"
+placeholder="Doctor Name">
+
+<button onclick="markLeave()">
+Mark On Leave
+</button>
+
+<h3>Dashboard</h3>
+
+<p id="doctorCount"></p>
+<p id="patientCount"></p>
+<p id="appointmentCount"></p>
+
 <script>
 
 let doctors =
 JSON.parse(localStorage.getItem("doctors")) || [];
+
+let leaveDoctors =
+JSON.parse(localStorage.getItem("leaveDoctors")) || [];
 
 function addDoctor(){
 
 let name =
 document.getElementById("doctorName").value;
 
-if(name===""){
-alert("Enter Doctor Name");
-return;
-}
+let specialization =
+document.getElementById("specialization").value;
 
-doctors.push(name);
+doctors.push({
+name:name,
+specialization:specialization
+});
 
 localStorage.setItem(
 "doctors",
 JSON.stringify(doctors)
 );
 
-document.getElementById("doctorName").value="";
-
 showDoctors();
+updateDashboard();
+}
+
+function markLeave(){
+
+let doctor =
+document.getElementById("leaveDoctor").value;
+
+leaveDoctors.push(doctor);
+
+localStorage.setItem(
+"leaveDoctors",
+JSON.stringify(leaveDoctors)
+);
+
+alert("Doctor Marked On Leave");
 }
 
 function showDoctors(){
@@ -58,13 +105,40 @@ list.innerHTML="";
 
 doctors.forEach(doc=>{
 
-list.innerHTML +=
-`<div class="card">${doc}</div>`;
+list.innerHTML += `
+<div class="card">
+${doc.name}
+<br>
+${doc.specialization}
+</div>
+`;
 
 });
+
+}
+
+function updateDashboard(){
+
+let appointments =
+JSON.parse(localStorage.getItem("appointments")) || [];
+
+let patients =
+new Set(
+appointments.map(a=>a.patient)
+);
+
+document.getElementById("doctorCount").innerHTML =
+"Total Doctors : " + doctors.length;
+
+document.getElementById("patientCount").innerHTML =
+"Total Patients : " + patients.size;
+
+document.getElementById("appointmentCount").innerHTML =
+"Total Appointments : " + appointments.length;
 }
 
 showDoctors();
+updateDashboard();
 
 </script>
 
