@@ -1,0 +1,78 @@
+<div class="portal-box">
+
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="style.css">
+<title>Doctor</title>
+</head>
+<body>
+
+<h2>Doctor Portal</h2>
+
+<select id="doctorFilter"
+onchange="showAppointments()">
+</select>
+
+<div id="appointmentList"></div>
+
+<a href="index.html">
+<button>Home</button>
+</a>
+
+<script>
+
+let doctors =
+JSON.parse(localStorage.getItem("doctors")) || [];
+
+let dropdown =
+document.getElementById("doctorFilter");
+
+doctors.forEach(doc=>{
+
+dropdown.innerHTML +=
+`<option>${doc}</option>`;
+
+});
+
+function showAppointments(){
+
+let selectedDoctor =
+dropdown.value;
+
+let appointments =
+JSON.parse(
+localStorage.getItem("appointments")
+) || [];
+
+let list =
+document.getElementById("appointmentList");
+
+list.innerHTML="";
+
+appointments.forEach(app=>{
+
+if(app.doctor===selectedDoctor){
+
+list.innerHTML +=
+`
+<div class="card">
+Patient: ${app.patient}
+<br>
+Doctor: ${app.doctor}
+</div>
+`;
+
+}
+
+});
+
+}
+
+showAppointments();
+
+</script>
+
+</body>
+</html>
+</div>

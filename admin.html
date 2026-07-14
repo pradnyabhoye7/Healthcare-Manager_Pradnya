@@ -1,0 +1,74 @@
+<div class="portal-box">
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="style.css">
+<title>Admin</title>
+</head>
+<body>
+
+<h2>Admin Portal</h2>
+
+<input type="text" id="doctorName"
+placeholder="Enter Doctor Name">
+
+<button onclick="addDoctor()">Add Doctor</button>
+
+<h3>Doctors</h3>
+
+<div id="doctorList"></div>
+
+<a href="index.html">
+<button>Home</button>
+</a>
+
+<script>
+
+let doctors =
+JSON.parse(localStorage.getItem("doctors")) || [];
+
+function addDoctor(){
+
+let name =
+document.getElementById("doctorName").value;
+
+if(name===""){
+alert("Enter Doctor Name");
+return;
+}
+
+doctors.push(name);
+
+localStorage.setItem(
+"doctors",
+JSON.stringify(doctors)
+);
+
+document.getElementById("doctorName").value="";
+
+showDoctors();
+}
+
+function showDoctors(){
+
+let list =
+document.getElementById("doctorList");
+
+list.innerHTML="";
+
+doctors.forEach(doc=>{
+
+list.innerHTML +=
+`<div class="card">${doc}</div>`;
+
+});
+}
+
+showDoctors();
+
+</script>
+
+</body>
+</html>
+   
+</div>

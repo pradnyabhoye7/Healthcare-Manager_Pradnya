@@ -1,0 +1,91 @@
+<div class="portal-box">
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="style.css">
+<title>Patient</title>
+</head>
+<body>
+
+<h2>Patient Portal</h2>
+
+<input type="text"
+id="patientName"
+placeholder="Patient Name">
+
+<br>
+
+<select id="doctorSelect"></select>
+
+<br>
+
+<button onclick="bookAppointment()">
+Book Appointment
+</button>
+
+<p id="msg"></p>
+
+<a href="index.html">
+<button>Home</button>
+</a>
+
+<script>
+
+let doctors =
+JSON.parse(localStorage.getItem("doctors")) || [];
+
+let select =
+document.getElementById("doctorSelect");
+
+if(doctors.length===0){
+select.innerHTML =
+"<option>No Doctors Available</option>";
+}
+else{
+
+doctors.forEach(doc=>{
+
+select.innerHTML +=
+`<option>${doc}</option>`;
+
+});
+}
+
+function bookAppointment(){
+
+let patient =
+document.getElementById("patientName").value;
+
+let doctor =
+document.getElementById("doctorSelect").value;
+
+if(patient===""){
+alert("Enter Patient Name");
+return;
+}
+
+let appointments =
+JSON.parse(
+localStorage.getItem("appointments")
+) || [];
+
+appointments.push({
+patient:patient,
+doctor:doctor
+});
+
+localStorage.setItem(
+"appointments",
+JSON.stringify(appointments)
+);
+
+document.getElementById("msg").innerHTML =
+"Appointment Booked Successfully";
+}
+
+</script>
+
+</body>
+</html>
+   
+</div>
