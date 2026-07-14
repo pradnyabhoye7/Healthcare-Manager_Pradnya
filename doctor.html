@@ -9,12 +9,22 @@
 <body>
 
 <h2>Doctor Portal</h2>
-
 <select id="doctorFilter"
 onchange="showAppointments()">
 </select>
 
 <div id="appointmentList"></div>
+
+<textarea
+id="notes"
+placeholder="Enter Notes">
+</textarea>
+
+<button onclick="generateSummary()">
+Generate Patient Summary
+</button>
+
+<div id="patientSummary"></div>
 
 <a href="index.html">
 <button>Home</button>
@@ -30,14 +40,17 @@ document.getElementById("doctorFilter");
 
 doctors.forEach(doc=>{
 
-dropdown.innerHTML +=
-`<option>${doc}</option>`;
+dropdown.innerHTML += `
+<option>
+${doc.name}
+</option>
+`;
 
 });
 
 function showAppointments(){
 
-let selectedDoctor =
+let doctor =
 dropdown.value;
 
 let appointments =
@@ -52,20 +65,35 @@ list.innerHTML="";
 
 appointments.forEach(app=>{
 
-if(app.doctor===selectedDoctor){
+if(app.doctor === doctor){
 
-list.innerHTML +=
-`
+list.innerHTML += `
 <div class="card">
-Patient: ${app.patient}
+Patient : ${app.patient}
 <br>
-Doctor: ${app.doctor}
+Date : ${app.date}
+<br>
+Urgency : ${app.urgency}
 </div>
 `;
 
 }
 
 });
+
+}
+
+function generateSummary(){
+
+let summary =
+"Please take medicines as prescribed and follow up after 3 days.";
+
+document.getElementById("patientSummary").innerHTML =
+`
+<div class="card">
+${summary}
+</div>
+`;
 
 }
 
