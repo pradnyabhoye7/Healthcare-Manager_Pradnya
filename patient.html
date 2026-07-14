@@ -1,33 +1,51 @@
-<div class="portal-box">
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" href="style.css">
-<title>Patient</title>
+    <title>Patient Portal</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h2>Patient Portal</h2>
+<div class="portal-box">
 
-<input type="text"
-id="patientName"
-placeholder="Patient Name">
+    <h2>Patient Portal</h2>
 
-<br>
+    <input
+        type="text"
+        id="patientName"
+        placeholder="Patient Name">
 
-<select id="doctorSelect"></select>
+    <select id="doctorSelect">
+    </select>
 
-<br>
+    <input
+        type="date"
+        id="appointmentDate">
 
-<button onclick="bookAppointment()">
-Book Appointment
-</button>
+    <textarea
+        id="symptoms"
+        placeholder="Enter Symptoms"
+        rows="5"
+        style="width:100%;max-width:400px;padding:10px;">
+    </textarea>
 
-<p id="msg"></p>
+    <br><br>
 
-<a href="index.html">
-<button>Home</button>
-</a>
+    <button onclick="bookAppointment()">
+        Book Appointment
+    </button>
+
+    <div id="summary"></div>
+
+    <p id="msg"></p>
+
+    <br>
+
+    <a href="index.html">
+        <button>Home</button>
+    </a>
+
+</div>
 
 <script>
 
@@ -37,55 +55,139 @@ JSON.parse(localStorage.getItem("doctors")) || [];
 let select =
 document.getElementById("doctorSelect");
 
-if(doctors.length===0){
-select.innerHTML =
-"<option>No Doctors Available</option>";
+if(doctors.length === 0){
+
+    select.innerHTML =
+    "<option>No Doctors Available</option>";
+
 }
 else{
 
-doctors.forEach(doc=>{
+    doctors.forEach(doc=>{
 
-select.innerHTML +=
-`<option>${doc}</option>`;
+        select.innerHTML += `
+        <option value="${doc.name}">
+            ${doc.name} - ${doc.specialization}
+        </option>
+        `;
 
-});
+    });
+
 }
 
 function bookAppointment(){
 
-let patient =
-document.getElementById("patientName").value;
+    let patient =
+    document.getElementById("patientName").value;
 
-let doctor =
-document.getElementById("doctorSelect").value;
+    let doctor =
+    document.getElementById("doctorSelect").value;
 
-if(patient===""){
-alert("Enter Patient Name");
-return;
-}
+    let date =
+    document.getElementById("appointmentDate").value;
 
-let appointments =
-JSON.parse(
-localStorage.getItem("appointments")
-) || [];
+    let symptoms =
+    document.getElementById("symptoms")
+    .value
+    .toLowerCase();
 
-appointments.push({
-patient:patient,
-doctor:doctor
-});
+    if(patient === ""){
 
-localStorage.setItem(
-"appointments",
-JSON.stringify(appointments)
-);
+        alert("Enter Patient Name");
+        return;
 
-document.getElementById("msg").innerHTML =
-"Appointment Booked Successfully";
+    }
+
+    if(date === ""){
+
+        alert("Select Appointment Date");
+        return;
+
+    }
+
+    let leaveDoctors =
+    JSON.parse(
+    localStorage.getItem("leaveDoctors")
+    ) || [];
+
+    if(leaveDoctors.includes(doctor)){
+
+        alert("Doctor On Leave");
+        return;
+
+    }
+
+    let appointments =
+    JSON.parse(
+    localStorage.getItem("appointments")
+    ) || [];
+
+    let alreadyBooked =
+    appointments.find(
+    a => a.doctor === doctor &&
+         a.date === date
+    );
+
+    if(alreadyBooked){
+
+        alert("Slot Already Booked");
+        return;
+
+    }
+
+    let urgency = "Low";
+    let complaint = "General Checkup";
+
+    if(symptoms.includes("fever")){
+
+        urgency = "Medium";
+        complaint = "Fever";
+
+    }
+
+    if(symptoms.includes("chest pain")){
+
+        urgency = "High";
+        complaint = "Chest Pain";
+
+    }
+
+    document.getElementById("summary").innerHTML =
+    `
+    <div class="card">
+        <h3>AI Symptom Summary</h3>
+
+        <p>
+        Urgency : ${urgency}
+        </p>
+
+        <p>
+        Chief Complaint : ${complaint}
+        </p>
+    </div>
+    `;
+
+    appointments.push({
+
+        patient : patient,
+        doctor : doctor,
+        date : date,
+        symptoms : symptoms,
+        urgency : urgency
+
+    });
+
+    localStorage.setItem(
+    "appointments",
+    JSON.stringify(appointments)
+    );
+
+    document.getElementById("msg").innerHTML =
+    "Appointment Booked Successfully";
+
 }
 
 </script>
 
 </body>
 </html>
-   
-</div>
